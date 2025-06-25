@@ -4,3 +4,4 @@ pyzbar
 opencv-python
 google-api-python-client
 oauth2client
+gspread

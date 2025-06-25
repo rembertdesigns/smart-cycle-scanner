@@ -21,3 +21,18 @@ if item:
     if st.button("Evaluate"):
         flagged, message = evaluate_discrepancy(quantity, row["expected_count"], str(row["threshold"]))
         st.markdown(message)
+
+from sheets_sync import append_cycle_log
+
+if st.button("Log to Google Sheets"):
+    status = "Discrepancy" if flagged else "OK"
+    append_cycle_log([
+        row["SKU"],
+        row["Description"],
+        row["location_id"],
+        quantity,
+        row["expected_count"],
+        quantity - row["expected_count"],
+        status
+    ])
+    st.success("✅ Logged to Google Sheets")
