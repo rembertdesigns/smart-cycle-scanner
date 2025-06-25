@@ -9,9 +9,10 @@ import plotly.graph_objects as go
 import plotly.express as px
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from sheets_sync import append_cycle_log
 
 # Define Google Sheets constants
-SHEET_ID = "https://docs.google.com/spreadsheets/d/15D6ZVuXf7W_0AYPSRq_8PeZaESZ9mEpgS4djmTRMDE0/edit?gid=0#gid=0"  # Replace with your actual sheet ID
+SHEET_ID = "15D6ZVuXf7W_0AYPSRq_8PeZaESZ9mEpgS4djmTRMDE0"  # Replace with your actual sheet ID
 SCOPES = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
 # Enhanced page config
@@ -463,7 +464,19 @@ with col1:
                 'status': 'Flagged' if flagged else 'OK',
                 'flagged': flagged
             })
-            
+
+            # Push to Google Sheets
+            append_cycle_log({
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "sku": row["SKU"],
+                "item": selected_item,
+                "location": row["location_id"],
+                "counted": int(quantity),  # Force cast here
+                "expected": int(row["expected_count"]),
+                "variance": int(quantity - row["expected_count"]),
+                "status": "Discrepancy" if flagged else "OK"
+            })
+
             # Keep only last 10 entries
             st.session_state.activity_log = st.session_state.activity_log[:10]
             

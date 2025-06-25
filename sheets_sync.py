@@ -1,26 +1,28 @@
+from google.oauth2.service_account import Credentials
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 
-# Path to your downloaded JSON key
-SERVICE_ACCOUNT_FILE = "service_account.json"
+SCOPES = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+SHEET_ID = '15D6ZVuXf7W_0AYPSRq_8PeZaESZ9mEpgS4djmTRMDE0'
 
-# Your Google Sheet ID
-SHEET_ID = "https://docs.google.com/spreadsheets/d/15D6ZVuXf7W_0AYPSRq_8PeZaESZ9mEpgS4djmTRMDE0/edit?gid=0#gid=0"
-
-SCOPES = [
-    "https://spreadsheets.google.com/feeds",
-    "https://www.googleapis.com/auth/drive"
-]
-
-def append_cycle_log(row_data):
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(SERVICE_ACCOUNT_FILE, SCOPES)
-    client = gspread.authorize(credentials)
+def append_cycle_log(data: dict):
+    # Convert all data values to native Python types
+    cleaned_data = {k: str(v) if isinstance(v, (int, float)) else v for k, v in data.items()}
+    
+    creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
+    client = gspread.authorize(creds)
     sheet = client.open_by_key(SHEET_ID)
     worksheet = sheet.sheet1
 
-    timestamp = datetime.now().isoformat()
-    row = [timestamp] + row_data
-    worksheet.append_row(row)
+    new_row = [
+        cleaned_data.get("timestamp", datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
+        cleaned_data.get("sku", ""),
+        cleaned_data.get("item", ""),
+        cleaned_data.get("location", ""),
+        cleaned_data.get("counted", ""),
+        cleaned_data.get("expected", ""),
+        cleaned_data.get("variance", ""),
+        cleaned_data.get("status", "")
+    ]
 
-    return True
+    worksheet.append_row(new_row)
