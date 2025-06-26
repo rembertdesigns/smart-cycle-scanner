@@ -42,3 +42,23 @@ Enable blind counting to prevent bias, or receive extra alerts for high-value pr
 ├── service_account.json    # Google Sheets credentials (generated at runtime)
 ├── discrepancy_log.txt     # Optional log file
 └── README.md
+```
+
+---
+
+## 🚀 Getting Started
+
+### ✅ Prerequisites
+
+- Python 3.11+  
+- pip (Python package installer)  
+- A Google Cloud Project with Sheets API enabled  
+- Google Service Account JSON key (encoded as base64)
+
+### 📦 Installation
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/rembertdesigns/smart-cycle-scanner.git
+cd smart-cycle-scanner
