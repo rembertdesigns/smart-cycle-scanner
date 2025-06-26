@@ -58,6 +58,26 @@ def evaluate_discrepancy(quantity, expected, threshold="0.5", sku=None, category
 
     return flagged, msg, action
 
+def get_severity_score(discrepancy, expected, product_type):
+    """
+    Returns a numerical severity score (1–5) for triaging discrepancies.
+
+    5 = High risk (e.g., >5 unit variance or sensitive product)
+    4 = Sensitive category with any discrepancy
+    3 = Medium discrepancy (>2 units)
+    2 = Small discrepancy (<=2 units)
+    1 = No discrepancy
+    """
+    if abs(discrepancy) > 5:
+        return 5
+    elif product_type and product_type.lower() in ["vape cartridge", "concentrate", "extract"] and abs(discrepancy) > 0:
+        return 4
+    elif abs(discrepancy) > 2:
+        return 3
+    elif abs(discrepancy) > 0:
+        return 2
+    return 1
+
 def compute_severity(counted, expected):
     """
     Returns severity level based on discrepancy percentage.
