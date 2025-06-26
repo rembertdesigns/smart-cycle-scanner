@@ -23,6 +23,15 @@ Enable blind counting to prevent bias, or receive extra alerts for high-value pr
 
 ---
 
+## 🛠️ Tech Stack
+
+- **Streamlit** – rapid app framework for data-driven dashboards  
+- **Pandas** – data manipulation and analysis  
+- **Google Sheets API** – real-time cloud syncing  
+- **Python (3.12)** – backend logic and data validation  
+
+---
+
 ## 📁 Project Structure
 
 ```plaintext
